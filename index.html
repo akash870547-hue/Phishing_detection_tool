@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PHishing_detection_tool</title>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <style>
+    body {
+      font-family: "Courier New", monospace;
+      background-color: #0d0d0d;
+      color: #e0e0e0;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Glow */
+    .glow {
+      text-shadow: 0 0 5px #00f7ff, 0 0 10px #ff00ff, 0 0 20px #00f7ff;
+    }
+
+    /* Navbar */
+    .navbar {
+      width: 100%;
+      background: #111;
+      padding: 20px 0;
+      text-align: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      border-bottom: 2px solid #00f7ff;
+      box-shadow: 0 0 20px #ff00ff;
+      z-index: 100;
+    }
+
+    .navbar h1 {
+      margin: 0;
+      font-size: 28px;
+      color: #00f7ff;
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+
+    /* Container */
+    .container {
+      margin-top: 120px;
+      background: rgba(15, 15, 15, 0.95);
+      padding: 40px;
+      border: 2px solid #00f7ff;
+      border-radius: 15px;
+      width: 75%;
+      max-width: 850px;
+      text-align: center;
+      box-shadow: 0 0 25px #ff00ff;
+    }
+
+    h2 {
+      color: #00f7ff;
+      font-size: 22px;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      border-bottom: 1px dashed #ff00ff;
+      padding-bottom: 10px;
+    }
+
+    input {
+      width: 90%;
+      padding: 12px;
+      font-size: 16px;
+      border: 2px solid #00f7ff;
+      border-radius: 6px;
+      background-color: #1a1a1a;
+      color: #00f7ff;
+      margin-bottom: 15px;
+      outline: none;
+      box-shadow: 0 0 10px #00f7ff inset;
+    }
+
+    input:focus {
+      border-color: #ff00ff;
+      box-shadow: 0 0 20px #ff00ff;
+    }
+
+    button {
+      background: linear-gradient(90deg, #00f7ff, #ff00ff);
+      color: #fff;
+      padding: 14px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+      transition: 0.3s;
+      border: none;
+      font-weight: bold;
+      letter-spacing: 1px;
+      box-shadow: 0 0 15px #00f7ff;
+    }
+
+    button:hover {
+      background: linear-gradient(90deg, #ff00ff, #00f7ff);
+      color: #000;
+      transform: scale(1.05);
+      box-shadow: 0 0 25px #ff00ff;
+    }
+
+    .scan-icon {
+      font-size: 18px;
+    }
+
+    /* Spinner */
+    .spinner {
+      display: none;
+      margin: 10px auto;
+      border: 5px solid #111;
+      border-top: 5px solid #00f7ff;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Result */
+    .result-box {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 18px;
+      border: 1px dashed #00f7ff;
+      box-shadow: 0 0 20px #ff00ff;
+      background: rgba(10, 10, 10, 0.9);
+    }
+
+    .benign { color: #39ff14; }
+    .defacement { color: #ffcc00; }
+    .malware { color: #ff0033; }
+    .phishing { color: #ff00ff; }
+    .unknown { color: #e0e0e0; }
+
+    /* Matrix background */
+    .matrix-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: black;
+      overflow: hidden;
+    }
+
+    canvas {
+      display: block;
+    }
+  </style>
+  <script>
+    function showSpinner(spinnerId) {
+      document.getElementById(spinnerId).style.display = 'block';
+      setTimeout(() => {
+        document.getElementById(spinnerId).style.display = 'none';
+      }, 3000);
+    }
+
+    // Matrix Animation
+    window.onload = function() {
+      const canvas = document.getElementById("matrixCanvas");
+      const ctx = canvas.getContext("2d");
+
+      canvas.height = window.innerHeight;
+      canvas.width = window.innerWidth;
+
+      let matrix = "Aka$h SaR@sWaT";
+      matrix = matrix.split("");
+
+      const font_size = 15;
+
+      const columns = canvas.width / font_size;
+      const drops = [];
+
+      for (let x = 0; x < columns; x++)
+        drops[x] = 1;
+
+      function draw() {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = "#00f7ff";  // neon cyan instead of green
+        ctx.font = font_size + "px monospace";
+
+        for (let i = 0; i < drops.length; i++) {
+          const text = matrix[Math.floor(Math.random() * matrix.length)];
+          ctx.fillText(text, i * font_size, drops[i] * font_size);
+
+          if (drops[i] * font_size > canvas.height && Math.random() > 0.975)
+            drops[i] = 0;
+
+          drops[i]++;
+        }
+      }
+
+      setInterval(draw, 40);
+    };
+  </script>
+</head>
+<body>
+  <!-- Matrix Background -->
+  <div class="matrix-bg">
+    <canvas id="matrixCanvas"></canvas>
+  </div>
+
+  <div class="navbar">
+    <h1 class="glow"><i class="fas fa-shield-alt"></i> THREAT_GUARD</h1>
+  </div>
+
+  <div class="container glow">
+    <h2><i class="fas fa-exclamation-triangle"></i> File Scanner</h2>
+    <form action="/scam/" method="post" enctype="multipart/form-data" onsubmit="showSpinner('fileSpinner')">
+      <label><strong>Upload File (PDF/TXT):</strong></label><br>
+      <input type="file" name="file" required><br>
+      <button type="submit"><i class="fas fa-upload scan-icon"></i> Analyze</button>
+      <div id="fileSpinner" class="spinner"></div>
+    </form>
+
+    {% if message %}
+    <div class="result-box">
+      <h3>Result:</h3>
+      <p>{{ message }}</p>
+    </div>
+    {% endif %}
+
+    <h2><i class="fas fa-link"></i> URL Threat Detection</h2>
+    <form method="post" action="/predict" onsubmit="showSpinner('urlSpinner')">
+      <label>Enter URL:</label>
+      <input type="text" name="url" placeholder="https://example.com" required>
+      <button type="submit"><i class="fas fa-search"></i> Classify</button>
+      <div id="urlSpinner" class="spinner"></div>
+    </form>
+
+    {% if predicted_class %}
+    <div class="result-box {{ predicted_class.lower() }}">
+      <p><strong>URL:</strong> {{ input_url }}</p>
+      <p><strong>Predicted Class:</strong> {{ predicted_class }}</p>
+    </div>
+    {% endif %}
+  </div>
+</body>
+</html>
+
