@@ -11,7 +11,7 @@ app = Flask(__name__)
 # -------------------------------
 # 2️⃣ Set Google Gemini API Key
 # -------------------------------
-os.environ["GEMINI_API_KEY"] = "AIzaSyA7wHSYxafzQhKmQKNoAfObXMuRiwvmcYI"
+os.environ["GEMINI_API_KEY"] = "GEMINI API KEY "
 client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
 
 # -------------------------------
